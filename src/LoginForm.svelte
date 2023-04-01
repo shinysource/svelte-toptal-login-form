@@ -1,4 +1,8 @@
 <script>
+  import { getContext } from "svelte";
+  import { key as userContextKey } from "./userContext";
+
+  const user = getContext(userContextKey);
   export let submit;
   let email = "";
   let password = "";
