@@ -1,9 +1,11 @@
 <script>
   import LoginForm from "./LoginForm.svelte";
+  const submit = ({ email, password }) =>
+    new Promise((resolve, reject) => setTimeout(resolve, 1000));
 </script>
 
 <section>
-  <LoginForm />
+  <LoginForm {submit} />
 </section>
 
 <style>

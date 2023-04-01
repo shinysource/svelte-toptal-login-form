@@ -1,13 +1,67 @@
-<form>
-  <h1>👤</h1>
+<script>
+  export let submit;
+  let email = "";
+  let password = "";
+  let isLoading = false;
+  let isSuccess = false;
+  let errors = {};
 
-  <label>Email</label>
-  <input name="email" placeholder="name@example.com" />
+  const handleSubmit = () => {
+    errors = {};
+    if (email.length === 0) {
+      errors.email = "Field should not be empty";
+    }
+    if (password.length === 0) {
+      errors.password = "Field should not be empty";
+    }
+    if (Object.keys(errors).length === 0) {
+      isLoading = true;
+      submit({ email, password })
+        .then(() => {
+          isSuccess = true;
+          isLoading = false;
+        })
+        .catch((err) => {
+          errors.server = err;
+          isLoading = false;
+        });
+    }
+  };
+</script>
 
-  <label>Password</label>
-  <input name="password" type="password" placeholder="password" />
+<form on:submit|preventDefault={handleSubmit}>
+  {#if isSuccess}
+    <div class="success">
+      🔓
+      <br />
+      You've been successfully logged in.
+    </div>
+  {:else}
+    <h1>👤</h1>
 
-  <button type="submit">Log in 🔒</button>
+    <label>Email</label>
+    <input name="email" placeholder="name@example.com" bind:value={email} />
+
+    <label>Password</label>
+    <input
+      name="password"
+      type="password"
+      placeholder="password"
+      bind:value={password}
+    />
+
+    <button type="submit"
+      >{#if isLoading}Logging in...{:else}Log in 🔒{/if}</button
+    >
+
+    {#if Object.keys(errors).length > 0}
+      <ul class="errors">
+        {#each Object.keys(errors) as field}
+          <li>{field}: {errors[field]}</li>
+        {/each}
+      </ul>
+    {/if}
+  {/if}
 </form>
 
 <style>
@@ -57,5 +111,13 @@
   h1 {
     margin: 10px 20px 30px 20px;
     font-size: 40px;
+  }
+  .errors {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    border: 2px solid #be6283;
+    color: #be6283;
+    background: rgba(190, 98, 131, 0.3);
   }
 </style>
